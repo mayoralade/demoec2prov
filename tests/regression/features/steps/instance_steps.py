@@ -55,5 +55,4 @@ def step_impl(context, msg):
     context.ip = context.ec2.get_instance_public_ip(context.instance_id)
     sleep(15)
     context.homepage = urllib2.urlopen(urllib2.Request('http://{0}/'.format(context.ip))).read().strip()
-    print(context.homepage)
     assert(context.homepage == msg)
