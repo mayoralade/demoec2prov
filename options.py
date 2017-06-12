@@ -12,7 +12,8 @@ class CommandlineOptions(object):
     '''
         Manages the command line options and configuration file parameters
     '''
-    def __init__(self):
+    def __init__(self, test=False):
+        self.test = 'Hello'
         self.parser = CommandlineOptions.__parse_options()
         (self.args, _) = self.parser.parse_args()
         if (self.args.start or self.args.end) and not self.args.instance:
@@ -30,7 +31,7 @@ class CommandlineOptions(object):
             self.max_count = int(config.get('setup', 'max_count'))
         elif self.args.start or self.args.end or self.args.status:
             pass
-        else:
+        elif not test:
             self.parser.print_help()
             sys.exit(0)
 

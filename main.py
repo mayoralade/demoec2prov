@@ -19,24 +19,26 @@ class EC2DemoProvisioner(object):
         self.client = boto3.client('ec2')
         self.instance = {}
 
-    def get_instance_states(self):
+    def get_instance_states(self, state=None):
         '''
             Get all current running instances
         '''
+        state = state if state else 'running'
         all_instances = []
-        states = self.client.describe_instance_status()
-        for state in states.values()[:-1]:
-            for instance in state:
-                all_instances.append({'Instance ID': instance['InstanceId'],
-                                      'State': instance['InstanceState']['Name']})
+        states = self.client.describe_instance_status(Filters=[{'Name': 'instance-state-name',
+                                                                'Values': [state]}],
+                                                      IncludeAllInstances=True)
+        for item in states['InstanceStatuses']:
+            all_instances.append({'Instance ID': item['InstanceId'],
+                                  'State': item['InstanceState']['Name']})
 
         return all_instances
 
-    def get_instance_status(self, instance_id):
+    def get_instance_status(self, instance_id, state=None):
         '''
             Get the status of a single instance
         '''
-        all_instances = self.get_instance_states()
+        all_instances = self.get_instance_states(state)
         for instance in all_instances:
             if instance_id in instance.values():
                 return instance['State']
@@ -78,6 +80,16 @@ class EC2DemoProvisioner(object):
         else:
             confirm_progress('KeyPair file already exists')
 
+    def verify_key_pairs(self, key_name):
+        '''
+            Verify a key_name has been created in AWS
+        '''
+        try:
+            key_pairs = self.client.describe_key_pairs(KeyNames=[key_name])
+            return key_name == key_pairs['KeyPairs'][0]['KeyName']
+        except botocore.exceptions.ClientError:
+            return False
+
     def get_instance_public_ip(self, iid):
         '''
             Get the public ip address for the given instance
@@ -102,7 +114,7 @@ class EC2DemoProvisioner(object):
             Wait for machine to get to desired state, timeout if it takes too long
         '''
         sleep_time = 30
-        while self.get_instance_status(iid) != state:
+        while self.get_instance_status(iid, state) != state:
             if sleep_time >= timeout:
                 sys.exit('Instance is taking too long to provison, exiting...')
             print 'Please wait, instance is being created...'
@@ -122,7 +134,7 @@ def main():
     '''
         Main Function
 
-        This either starts, stops, gets status or creates an instance
+        This either starts, stops or creates an instance
     '''
     options = CommandlineOptions()
     provisioner = EC2DemoProvisioner(options)

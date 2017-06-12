@@ -57,7 +57,14 @@ This sample application connects to Amazon's [Elastic Compute Cloud (EC2)](http:
                         Provide instance id
 
 You need to make sure the credentials you're using have the correct permissions to access the Amazon EC2 service.
-The configuration file enables you modify the ec2 zone, webserver config e.t.c
+The configuration file enables you modify the ec2 zone, webserver config e.t.c.
+
+## Testing
+
+Testing was done via regression tests using Behave framework and nose tests
+
+    pip install behave
+    pip install nose
 
 ## License
 
