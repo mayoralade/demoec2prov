@@ -61,10 +61,13 @@ The configuration file enables you modify the ec2 zone, webserver config e.t.c.
 
 ## Testing
 
-Testing was done via regression tests using Behave framework and nose tests
+Testing was done via regression tests using Behave framework
 
     pip install behave
-    pip install nose
+
+To run the tests
+
+    behave tests/regression/features/instance.feature
 
 ## License
 
