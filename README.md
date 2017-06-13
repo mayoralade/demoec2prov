@@ -24,11 +24,10 @@ for more information on getting your keys.
 ## Running the script
 
 This sample application connects to Amazon's [Elastic Compute Cloud (EC2)](http://aws.amazon.com/ec2),
- creates a linux ec2 t2.micro instance (RHEL 7) by default, configures httpd to
- display. The script will generate a bucket name and file for you. All you need 
- to do is run the code:
+ creates a linux ec2 t2.micro instance (RHEL 7) by default, configures httpd to  display "Automation for the people".
 
-    python main.py
+To use this script:
+
     Usage: main.py [options]
     Provision a Demo Linux Web Server on Amazon EC2
    
